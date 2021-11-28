@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Account, Category, Product
+from .models import Account, Category, Product, Cart, CartItem, Variation
 from django.contrib.auth.admin import UserAdmin
 
 
@@ -34,3 +34,28 @@ class ProductAdmin(admin.ModelAdmin):
     list_display = ('product_name', 'price', 'stock', 'category', 'modified_date', 'is_available')
 
 admin.site.register(Product,ProductAdmin)
+
+
+class CartAdmin(admin.ModelAdmin):
+
+    list_display = ('card_id', 'date_added')
+
+
+admin.site.register(Cart, CartAdmin)
+
+
+class CartItemAdmin(admin.ModelAdmin):
+
+    list_display = ('product', 'cart', 'quantity', 'is_active')
+
+
+admin.site.register(CartItem, CartItemAdmin)
+
+
+class VariationAdmin(admin.ModelAdmin):
+
+    list_display = ('product', 'variation_category', 'variation_value', 'is_active')
+    list_editable = ('is_active',)
+    list_filter = ('product', 'variation_category', 'variation_value', 'is_active')
+
+admin.site.register(Variation, VariationAdmin)
