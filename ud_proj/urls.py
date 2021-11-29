@@ -5,6 +5,10 @@ from django.conf.urls.static import static
 from django.conf import settings
 
 from ud_app.views import (
+    register,
+    login,
+    logout,
+    activate,
     home,
     store,
     product_detail,
@@ -13,6 +17,10 @@ from ud_app.views import (
     remove_cart,
     remove_cart_item,
     search,
+    dashboard,
+    forgot_password,
+    resetpassword_validate,
+    reset_password,
 )
 
 urlpatterns = [
@@ -26,4 +34,13 @@ urlpatterns = [
     path('remove_cart/<int:product_id>/<int:cart_item_id>/', remove_cart, name='remove_cart'),
     path('remove_cart_item/<int:product_id>/<int:cart_item_id>/', remove_cart_item, name='remove_cart_item'),
     path('store/search/', search, name='search'),
+    #account
+    path('register/', register, name='register'),
+    path('login/', login, name='login'),
+    path('logout/', logout, name='logout'),
+    path('activate/<uidb64>/<token>', activate, name='activate'),
+    path('dashboard/', dashboard, name='dashboard'),
+    path('forgotPassword/', forgot_password, name='forgot_password'),
+    path('resetpassword_validate/<uidb64>/<token>', resetpassword_validate, name='resetpassword_validate'),
+    path('reset_password/', reset_password, name='reset_password')
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
