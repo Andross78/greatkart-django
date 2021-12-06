@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Account
+from .models import Account, Order
 
 
 class RegistrationForm(forms.ModelForm):
@@ -35,3 +35,9 @@ class RegistrationForm(forms.ModelForm):
         for field in self.fields:
             self.fields[field].widget.attrs['class'] = 'form-control'
 
+
+class OrderForm(forms.ModelForm):
+
+    class Meta:
+        model = Order
+        fields = ['first_name', 'last_name', 'phone', 'email', 'address_line_1', 'address_line_2', 'country', 'state', 'city', 'order_note']
