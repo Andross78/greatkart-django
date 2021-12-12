@@ -21,8 +21,8 @@ from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.views.decorators.csrf import csrf_exempt
 
-from .models import Account, Product, Category, Cart, CartItem, Variation, Order, OrderProduct, Payment
-from .forms import RegistrationForm, OrderForm
+from .models import Account, Product, Category, Cart, CartItem, Variation, Order, OrderProduct, Payment, RevievRating
+from .forms import RegistrationForm, OrderForm, ReviewForm
 
 
 def register(request):
@@ -284,9 +284,22 @@ def product_detail(request, category_slug, product_slug):
     except Exception as e:
         raise e
 
+    if request.user.is_authenticated:
+        try:
+            order_product = OrderProduct.objects.filter(user=request.user, product_id=single_product.id).exists()
+        except OrderProduct.DoesNotExist:
+            order_product = None
+    else:
+        order_product = None
+    # Get the revievs
+    reviews = RevievRating.objects.filter(product_id=single_product.id, status=True)
+
+
     context = {
         'single_product': single_product,
-        'in_cart': in_cart
+        'in_cart': in_cart,
+        'order_product': order_product,
+        'reviews': reviews,
     }
     return render(request, 'product_detail.html', context)
 
@@ -699,3 +712,32 @@ def order_complete(request):
 
     except (Payment.DoesNotExist, Order.DoesNotExist):
         return redirect('home')
+
+
+def submit_review(request, product_id):
+
+    url = request.META.get('HTTP_REFERER')
+
+    if request.method == "POST":
+
+        try:
+            reviews = RevievRating.objects.get(user__id=request.user.id, product__id=product_id)
+            form = ReviewForm(request.POST, instance=reviews)
+            form.save()
+            messages.success(request, 'Thank you! Your review has been updated')
+            return redirect(url)
+
+        except RevievRating.DoesNotExist:
+            form = ReviewForm(request.POST)
+            if form.is_valid():
+                data = RevievRating()
+                data.subject = form.cleaned_data['subject']
+                data.rating = form.cleaned_data['rating']
+                data.review = form.cleaned_data['review']
+                data.ip = request.META.get('REMOTE_ADDR')
+                data.product_id = product_id
+                data.user_id = request.user.id
+                data.save()
+
+                messages.success(request, 'Thank you! Your review has been updated')
+                return redirect(url)

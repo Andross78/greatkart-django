@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Account, Category, Product, Cart, CartItem, Variation, Payment, OrderProduct, Order
+from .models import Account, Category, Product, Cart, CartItem, Variation, Payment, OrderProduct, Order, RevievRating
 from django.contrib.auth.admin import UserAdmin
 
 
@@ -89,4 +89,7 @@ class OrderProductAdmin(admin.ModelAdmin):
     search_fields = ['payment']
 
 admin.site.register(OrderProduct, OrderProductAdmin)
+
 admin.site.register(Payment)
+
+admin.site.register(RevievRating)

@@ -25,6 +25,7 @@ from ud_app.views import (
     place_order,
     payments,
     order_complete,
+    submit_review,
 )
 
 urlpatterns = [
@@ -55,5 +56,6 @@ urlpatterns = [
     path('place_order/', place_order, name='place_order'),
     path('payments/', payments, name='payments'),
     path('order_complete/', order_complete, name='order_complete'),
+    path('submit_review/<int:product_id>/', submit_review, name='submit_review')
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Account, Order
+from .models import Account, Order, RevievRating
 
 
 class RegistrationForm(forms.ModelForm):
@@ -41,3 +41,10 @@ class OrderForm(forms.ModelForm):
     class Meta:
         model = Order
         fields = ['first_name', 'last_name', 'phone', 'email', 'address_line_1', 'address_line_2', 'country', 'state', 'city', 'order_note']
+
+
+class ReviewForm(forms.ModelForm):
+
+    class Meta:
+        model = RevievRating
+        fields = ['subject', 'review', 'rating']
