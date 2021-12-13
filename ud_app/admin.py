@@ -1,5 +1,7 @@
 from django.contrib import admin
-from .models import Account, Category, Product, Cart, CartItem, Variation, Payment, OrderProduct, Order, RevievRating
+from django.utils.html import format_html
+
+from .models import Account, UserProfile, Category, Product, Cart, CartItem, Variation, Payment, OrderProduct, Order, RevievRating
 from django.contrib.auth.admin import UserAdmin
 
 
@@ -17,6 +19,19 @@ class AccountAdmin(UserAdmin):
 
 
 admin.site.register(Account, AccountAdmin)
+
+
+class UserProfileAdmin(admin.ModelAdmin):
+
+    def thumbnail(self, object):
+        return format_html('<img src="{}" width="30" style="border_radius:50%;">'.format(object.profile_pictures.url))
+
+    thumbnail.short_description = "Profile Picture"
+
+    list_display = ('thumbnail', 'user', 'city', 'state', 'country')
+
+admin.site.register(UserProfile, UserProfileAdmin)
+
 
 class CategoryAdmin(admin.ModelAdmin):
 

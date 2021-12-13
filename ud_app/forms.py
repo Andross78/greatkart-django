@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Account, Order, RevievRating
+from .models import Account, Order, RevievRating, UserProfile
 
 
 class RegistrationForm(forms.ModelForm):
@@ -48,3 +48,31 @@ class ReviewForm(forms.ModelForm):
     class Meta:
         model = RevievRating
         fields = ['subject', 'review', 'rating']
+
+
+class UserForm(forms.ModelForm):
+
+    class Meta:
+        model = Account
+        fields = ['first_name', 'last_name', 'phone_number']
+
+
+    def __init__(self, *args, **kwargs):
+        super(UserForm, self).__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].widget.attrs['class'] = 'form-control'
+
+
+class UserProfileForm(forms.ModelForm):
+
+    profile_pictures = forms.ImageField(required=False, error_messages={'invalid':("Image files only")}, widget=forms.FileInput)
+
+    class Meta:
+        model = UserProfile
+        fields = ['address_line1', 'address_line2', 'city', 'state', 'country', 'profile_pictures']
+
+
+    def __init__(self, *args, **kwargs):
+        super(UserProfileForm, self).__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].widget.attrs['class'] = 'form-control'
