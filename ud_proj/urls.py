@@ -1,6 +1,6 @@
 
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
 
@@ -33,7 +33,9 @@ from ud_app.views import (
 )
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('admin/', include('admin_honeypot.urls', namespace='admin-honeypot')),
+    path('securelogin/', admin.site.urls),
+
     path('', home, name='home'),
     path('store/', store, name='store'),
     path('store/category/<slug:category_slug>/', store, name='products_by_category'),

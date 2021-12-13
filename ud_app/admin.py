@@ -1,7 +1,8 @@
 from django.contrib import admin
 from django.utils.html import format_html
+import admin_thumbnails
 
-from .models import Account, UserProfile, Category, Product, Cart, CartItem, Variation, Payment, OrderProduct, Order, RevievRating
+from .models import Account, UserProfile, Category, Product, Cart, CartItem, Variation, Payment, OrderProduct, Order, RevievRating, ProductGallery
 from django.contrib.auth.admin import UserAdmin
 
 
@@ -42,11 +43,20 @@ class CategoryAdmin(admin.ModelAdmin):
 admin.site.register(Category, CategoryAdmin)
 
 
+@admin_thumbnails.thumbnail('image')
+class ProductGalleryInline(admin.TabularInline):
+
+    model = ProductGallery
+    extra = 1
+
+
 class ProductAdmin(admin.ModelAdmin):
 
     prepopulated_fields = {'slug': ('product_name',)}
 
     list_display = ('product_name', 'price', 'stock', 'category', 'modified_date', 'is_available')
+
+    inlines = [ProductGalleryInline]
 
 admin.site.register(Product,ProductAdmin)
 
@@ -108,3 +118,6 @@ admin.site.register(OrderProduct, OrderProductAdmin)
 admin.site.register(Payment)
 
 admin.site.register(RevievRating)
+
+
+admin.site.register(ProductGallery)

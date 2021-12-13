@@ -21,7 +21,8 @@ from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.views.decorators.csrf import csrf_exempt
 
-from .models import Account, UserProfile, Product, Category, Cart, CartItem, Variation, Order, OrderProduct, Payment, RevievRating
+from .models import Account, UserProfile, Product, Category, Cart, CartItem, Variation, Order, OrderProduct, Payment, \
+    RevievRating, ProductGallery
 from .forms import RegistrationForm, OrderForm, ReviewForm, UserForm, UserProfileForm
 
 
@@ -342,11 +343,17 @@ def reset_password(request):
 
 def home(request):
 
-    products = Product.objects.all().filter(is_available=True)
+    products = Product.objects.all().filter(is_available=True).order_by('created_date')
+
+    for product in products:
+        reviews = RevievRating.objects.filter(product_id=product.id, status=True)
 
     context = {
         'products': products,
+        'reviews': reviews,
     }
+
+
 
     return render(request, 'home.html', context)
 
@@ -392,15 +399,19 @@ def product_detail(request, category_slug, product_slug):
             order_product = None
     else:
         order_product = None
+
     # Get the revievs
     reviews = RevievRating.objects.filter(product_id=single_product.id, status=True)
 
+    # Get the product gallery
+    product_gallery = ProductGallery.objects.filter(product_id=single_product.id)
 
     context = {
         'single_product': single_product,
         'in_cart': in_cart,
         'order_product': order_product,
         'reviews': reviews,
+        'product_gallery': product_gallery,
     }
     return render(request, 'product_detail.html', context)
 
